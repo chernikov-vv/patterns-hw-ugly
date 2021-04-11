@@ -8,6 +8,7 @@ import java.util.Random;
 public class PhoneGenerator implements Generator<Phone> {
 
     private String number;
+    private boolean havePhone = true;
 
     /**
      * Номер телефона генерируется следующим образом:
@@ -15,15 +16,25 @@ public class PhoneGenerator implements Generator<Phone> {
      */
     @Override
     public final void generateParams(final int code) {
-        number = "+79"
-                + String.format("%02d", MyMath.getDigitsSum(code))
-                + String.format("%03d", new Random().nextInt(1000))
-                + String.format("%04d", code);
+        String input = Integer.toString(code);
+        if (!input.equals(new StringBuilder(input).reverse().toString())) {
+            number = "+79"
+                    + String.format("%02d", MyMath.getDigitsSum(code))
+                    + String.format("%03d", new Random().nextInt(1000))
+                    + String.format("%04d", code);
+        } else {
+            havePhone = false;
+        }
     }
 
     @Override
     public final Phone buildResponse() {
-        return new Phone(number);
+        if (havePhone) {
+            return new Phone(number);
+        } else {
+            return null;
+        }
     }
 }
+
 
